@@ -1,37 +1,54 @@
 # Personal Journal API
 
-API REST desenvolvida com Django REST Framework utilizando autenticação JWT, permissões customizadas e controle de acesso por usuário.
+API REST desenvolvida com Django REST Framework para gerenciamento de entradas de diário, utilizando autenticação JWT, PostgreSQL em produção e deploy no Render.
+
+## 🚀 Demonstração Online
+
+### API Publicada
+
+https://personal-journal-api-v08h.onrender.com
+
+### Endpoint Público
+
+https://personal-journal-api-v08h.onrender.com/api/journal/public/
+
+### Repositório GitHub
+
+https://github.com/victorlaranjeira/personal-journal-api
 
 ---
 
-# Tecnologias utilizadas
+# 🛠 Tecnologias Utilizadas
 
-- Python
-- Django
+- Python 3
+- Django 6
 - Django REST Framework
-- SimpleJWT
-- SQLite
+- JWT Authentication (SimpleJWT)
+- PostgreSQL
+- Render
+- Gunicorn
+- WhiteNoise
+- Git
+- GitHub
 - Postman
-- Git/GitHub
 
 ---
 
-# Funcionalidades
+# 📋 Funcionalidades
 
 - Cadastro de usuários
 - Login com JWT
 - Refresh Token
-- Logout com blacklist
-- CRUD completo de entradas do diário
-- Rotas protegidas com autenticação
-- Permissão para acessar apenas os próprios dados
-- Rotas públicas
-- Sistema de grupos (`Editor`)
-- Endpoint `/api/auth/me/`
+- Endpoint de usuário autenticado
+- CRUD de entradas do diário
+- Rotas públicas e privadas
+- Controle de permissões por usuário
+- Deploy em produção
+- Banco PostgreSQL hospedado no Render
 
 ---
 
-# Estrutura do Projeto
+# 📂 Estrutura do Projeto
 
 ```bash
 personal-journal-api/
@@ -39,45 +56,37 @@ personal-journal-api/
 ├── accounts/
 ├── journal/
 ├── core/
-├── venv/
 ├── manage.py
-└── db.sqlite3
+├── requirements.txt
+├── build.sh
+├── README.md
+└── .env
 ```
 
 ---
 
-# Instalação
+# ⚙️ Instalação Local
 
-## 1. Clonar o repositório
+## Clonar o projeto
 
 ```bash
-git clone https://github.com/SEU_USUARIO/personal-journal-api.git
+git clone https://github.com/victorlaranjeira/personal-journal-api.git
 ```
-
----
-
-## 2. Entrar na pasta
 
 ```bash
 cd personal-journal-api
 ```
 
----
-
-## 3. Criar ambiente virtual
+## Criar ambiente virtual
 
 ```bash
 python -m venv venv
 ```
 
----
-
-## 4. Ativar ambiente virtual
-
 ### Windows
 
 ```bash
-venv\Scripts\Activate.ps1
+venv\Scripts\activate
 ```
 
 ### Linux/macOS
@@ -86,50 +95,39 @@ venv\Scripts\Activate.ps1
 source venv/bin/activate
 ```
 
----
-
-# Instalar dependências
+## Instalar dependências
 
 ```bash
-pip install django
-pip install djangorestframework
-pip install djangorestframework-simplejwt
+pip install -r requirements.txt
 ```
 
----
-
-# Rodar migrations
+## Executar migrações
 
 ```bash
-python manage.py makemigrations
 python manage.py migrate
 ```
 
----
-
-# Criar super usuário
+## Criar superusuário
 
 ```bash
 python manage.py createsuperuser
 ```
 
----
-
-# Rodar servidor
+## Executar servidor
 
 ```bash
 python manage.py runserver
 ```
 
-Servidor:
+Servidor local:
 
 ```text
-http://127.0.0.1:8000/
+http://127.0.0.1:8000
 ```
 
 ---
 
-# Endpoints
+# 🔗 Endpoints
 
 ## Registro
 
@@ -143,15 +141,15 @@ http://127.0.0.1:8000/
 
 ```json
 {
-  "username": "maria",
-  "email": "maria@email.com",
+  "username": "teste",
+  "email": "teste@email.com",
   "password": "senha1234"
 }
 ```
 
 ---
 
-# Login JWT
+## Login JWT
 
 ### POST
 
@@ -163,7 +161,7 @@ http://127.0.0.1:8000/
 
 ```json
 {
-  "username": "maria",
+  "username": "teste",
   "password": "senha1234"
 }
 ```
@@ -179,7 +177,7 @@ http://127.0.0.1:8000/
 
 ---
 
-# Usuário logado
+## Usuário autenticado
 
 ### GET
 
@@ -190,12 +188,12 @@ http://127.0.0.1:8000/
 ### Header
 
 ```text
-Authorization: Bearer TOKEN
+Authorization: Bearer TOKEN_ACCESS
 ```
 
 ---
 
-# Criar entrada
+## Criar entrada
 
 ### POST
 
@@ -206,7 +204,7 @@ Authorization: Bearer TOKEN
 ### Header
 
 ```text
-Authorization: Bearer TOKEN
+Authorization: Bearer TOKEN_ACCESS
 ```
 
 ### Body
@@ -214,7 +212,7 @@ Authorization: Bearer TOKEN
 ```json
 {
   "title": "Minha primeira entrada",
-  "content": "Hoje aprendi JWT",
+  "content": "Hoje aprendi JWT no Django",
   "mood": "happy",
   "is_public": true
 }
@@ -222,7 +220,7 @@ Authorization: Bearer TOKEN
 
 ---
 
-# Listar entradas
+## Listar entradas do usuário
 
 ### GET
 
@@ -232,7 +230,7 @@ Authorization: Bearer TOKEN
 
 ---
 
-# Entradas públicas
+## Entradas públicas
 
 ### GET
 
@@ -242,54 +240,86 @@ Authorization: Bearer TOKEN
 
 ---
 
-# Logout
+# 🧪 Testes Realizados em Produção
 
-### POST
+### Cadastro Online
+
+Usuário criado com sucesso através da API hospedada no Render.
+
+### Login JWT
+
+Token de acesso e refresh gerados corretamente.
+
+### Autenticação
+
+Validação realizada através do endpoint:
 
 ```text
-/api/auth/logout/
+/api/auth/me/
 ```
 
-### Body
+Retornando os dados do usuário autenticado.
 
-```json
-{
-  "refresh": "TOKEN_REFRESH"
-}
+### Endpoint Público
+
+A rota:
+
+```text
+/api/journal/public/
+```
+
+retorna HTTP 200 OK em produção.
+
+---
+
+# ☁️ Deploy
+
+O projeto foi publicado utilizando:
+
+- Render Web Service
+- PostgreSQL Render
+- Gunicorn
+- WhiteNoise
+- Variáveis de ambiente
+
+### Build Command
+
+```bash
+./build.sh
+```
+
+### Start Command
+
+```bash
+gunicorn core.wsgi:application
 ```
 
 ---
 
-# Segurança
-
-O projeto utiliza:
-
-- JWT Authentication
-- IsAuthenticated
-- Permissões customizadas
-- Controle por proprietário (`IsOwner`)
-- Groups do Django
-- Blacklist de tokens
-
----
-
-# Aprendizados
+# 📚 Aprendizados
 
 Durante o desenvolvimento deste projeto foram praticados:
 
 - APIs REST
-- Autenticação JWT
 - Django REST Framework
-- Relacionamentos com User
-- CRUD protegido
-- Permissões e autorização
+- JWT Authentication
 - Serializers
 - ViewSets
-- Rotas protegidas
+- Permissões customizadas
+- PostgreSQL
+- Deploy em produção
+- Variáveis de ambiente
 - Git e GitHub
+- Integração com Render
 
 ---
 
-# Autor
+# 👨‍💻 Autor
 
-Victor Laranjeira
+**Victor Laranjeira**
+
+GitHub:
+https://github.com/victorlaranjeira
+
+LinkedIn:
+https://www.linkedin.com/in/victorlaranjeira
